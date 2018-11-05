@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# If no site name is passed assume the directory is the site name
+if [ -z "$1" ]
+  then
+    set -- ${PWD##*/}
+fi
+
+touch .docker/config/$1.conf
+
+echo "<VirtualHost *:80>" >> .docker/config/$1.conf
+echo "ServerAdmin admin@yourdomain.com" >> .docker/config/$1.conf
+echo "DocumentRoot /var/www/html/" >> .docker/config/$1.conf
+echo "ServerName $1.local" >> .docker/config/$1.conf
+echo "ServerAlias www.$1.local" >> .docker/config/$1.conf
+echo "<Directory /var/www/html/>" >> .docker/config/$1.conf
+echo "    Options FollowSymLinks" >> .docker/config/$1.conf
+echo "    AllowOverride All" >> .docker/config/$1.conf
+echo "    Order allow,deny" >> .docker/config/$1.conf
+echo "    allow from all" >> .docker/config/$1.conf
+echo "</Directory>" >> .docker/config/$1.conf
+echo "</VirtualHost>" >> .docker/config/$1.conf
