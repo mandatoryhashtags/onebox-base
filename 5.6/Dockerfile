@@ -47,6 +47,12 @@ RUN a2enmod rewrite
 RUN a2ensite default-ssl
 RUN a2enmod ssl
 
+# Install N98 Magerun
+
+RUN wget https://files.magerun.net/n98-magerun1.phar \
+	&& chmod +x ./n98-magerun1.phar \
+	&& mv ./n98-magerun1.phar /usr/local/bin/
+
 # Setup PHP
 RUN mkdir /run/php
 RUN touch /run/php/php-fpm.sock
@@ -79,4 +85,30 @@ RUN useradd -m -p `mkpasswd "nucleus"` -s /bin/bash nucleus
 RUN adduser nucleus sudo
 RUN ln -s /var/www/html /home/nucleus/html
 RUN echo "alias php-debug='php -d xdebug.remote_autostart=1'" > /home/nucleus/.bash_aliases
+
+# Add custom configuration
+ADD .docker/config/fpm.conf /etc/php/5.6/fpm/pool.d/www.conf
+
+# Configuration
+COPY .docker/config/sites-available/* /etc/apache2/sites-available/
+ADD .docker/config/custom-xdebug.ini /usr/local/etc/php/conf.d/custom-xdebug.ini
+COPY .docker/bin/* /usr/local/bin/
+COPY .docker/users/* /var/www/
+RUN chmod +x /usr/local/bin/*
+RUN ln -sf /etc/apache2/sites-available/*.conf /etc/apache2/sites-enabled/
+
+
+RUN chmod 755 /start.sh
+RUN chmod 755 /usr/bin/composer
+RUN chmod 755 /usr/bin/n98-magerun
+
+
+# Cleanup
+RUN apt-get autoremove -y
+RUN apt-get clean
+RUN rm -rf /var/cache/apk/* /var/tmp/* /tmp/*
+
+WORKDIR /var/www/html
+
+CMD ["/start.sh"]
 
