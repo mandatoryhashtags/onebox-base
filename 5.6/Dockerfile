@@ -43,6 +43,7 @@ apache2-bin \
 apache2-data \
 apache2-utils \
 libapache2-mod-fcgid \
+libapache2-mod-php5.6 \
 php-xdebug \ 
 curl \
 php5.6-bcmath \
@@ -85,6 +86,8 @@ RUN wget https://files.magerun.net/n98-magerun.phar \
 # Setup PHP
 RUN mkdir /run/php
 RUN touch /run/php/php-fpm.sock
+
+RUN a2enmod php5.6
 
 # Setup apache
 RUN ln -s /etc/apache2/mods-available/proxy.conf /etc/apache2/mods-enabled/proxy.conf
