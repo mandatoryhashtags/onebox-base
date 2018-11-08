@@ -1,0 +1,6 @@
+[client-server]
+bind-address = 0.0.0.0
+
+[mysqld]
+tmp_table_size = 4G
+max_heap_table_size = 4G
