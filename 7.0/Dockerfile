@@ -89,6 +89,9 @@ RUN touch /run/php/php-fpm.sock
 
 RUN a2enmod php7.0
 
+#Ensure old PID due to previous usage are killed
+RUN rm -f /var/run/apache2/apache2.pid
+
 # Setup apache
 RUN ln -s /etc/apache2/mods-available/proxy.conf /etc/apache2/mods-enabled/proxy.conf
 RUN ln -s /etc/apache2/mods-available/proxy.load /etc/apache2/mods-enabled/proxy.load
